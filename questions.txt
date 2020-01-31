@@ -1,0 +1,9 @@
+How to answer questions?
+ +Write correct letter sequence, big or small, without leading or trailing spaces
+ Input the index of the correct answer
+ Slam enter and programme will predict your answer
+Who made this programme?
+ Me
+ Some idiot
+ +Diamond Dust
+ A tall lad from the North
