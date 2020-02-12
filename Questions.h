@@ -1,16 +1,17 @@
 #pragma once
-#include<string>
-#include<fstream>
-#include<vector>
+#include <string>
+#include <fstream>
+#include <vector>
 #include <algorithm>
 #include <random>
 #include <chrono>
 #include<iostream>
+#include <sstream>
 
 struct Question {
 	std::string					qQuestion;
 	std::vector<std::string>	qAnswers;
-	int							qCorrectAnswerIndex;
+	std::vector<bool>			qCorrectAnswerIndexes;
 };
 
 class Questions {
@@ -35,8 +36,8 @@ class Questions {
 		std::vector<Question>		qList;
 		std::vector<unsigned int>	qListIndexes;
 		unsigned int				qCurrentIndex;
-		unsigned int				qCurrentCorrect;
-		unsigned int				qCurrentTotal;
+		double						qCurrentCorrect;
+		double						qCurrentTotal;
 		bool						isShowingCorrectAnswer;
 
 		void ReadQuestions();
@@ -47,8 +48,10 @@ class Questions {
 
 		void PrintQuestion(Question q);
 		void PrintResults();
-		void PrintResult(bool correct, unsigned int correctIndex);
+		void PrintResult(bool correct, std::vector<bool> answers);
 
 		int StringToNumber(std::string s);
 		std::string NumberToString(int n);
+
+		void CheckAnswer(std::string answer, Question q);
 };

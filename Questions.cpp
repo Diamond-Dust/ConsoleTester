@@ -79,11 +79,12 @@ void Questions::ReadQuestions()
 			if (line[1] == '+')
 			{
 				qList[currentIndex].qAnswers.push_back(line.substr(2, std::string::npos));
-				qList[currentIndex].qCorrectAnswerIndex = (int)qList[currentIndex].qAnswers.size() - 1;
+				qList[currentIndex].qCorrectAnswerIndexes.push_back(true);
 			}
 			else
 			{
 				qList[currentIndex].qAnswers.push_back(line.substr(1, std::string::npos));
+				qList[currentIndex].qCorrectAnswerIndexes.push_back(false);
 			}
 		}
 		else
@@ -142,13 +143,7 @@ void Questions::RandomQuestioning()
 		}
 		else
 		{
-			bool isCorrect = StringToNumber(input) == q.qCorrectAnswerIndex;
-			if (isCorrect)
-			{
-				qCurrentCorrect++;
-			}
-			qCurrentTotal++;
-			PrintResult(isCorrect, q.qCorrectAnswerIndex);
+			CheckAnswer(input, q);
 		}
 	}
 }
@@ -178,13 +173,7 @@ void Questions::FullQuestioning()
 		}
 		else
 		{
-			bool isCorrect = StringToNumber(input) == q.qCorrectAnswerIndex;
-			if (isCorrect)
-			{
-				qCurrentCorrect++;
-			}
-			qCurrentTotal++;
-			PrintResult(isCorrect, q.qCorrectAnswerIndex);
+			CheckAnswer(input, q);
 		}
 	}
 	qCurrentIndex = 0;
@@ -231,13 +220,7 @@ void Questions::EndlessQuestioning()
 			}
 			else
 			{
-				bool isCorrect = StringToNumber(input) == q.qCorrectAnswerIndex;
-				if (isCorrect)
-				{
-					qCurrentCorrect++;
-				}
-				qCurrentTotal++;
-				PrintResult(isCorrect, q.qCorrectAnswerIndex);
+				CheckAnswer(input, q);
 			}
 		}
 		qCurrentIndex = 0;
@@ -281,7 +264,7 @@ void Questions::PrintResults()
 	printf("|-----------\n");
 }
 
-void Questions::PrintResult(bool correct, unsigned int correctIndex)
+void Questions::PrintResult(bool correct, std::vector<bool> answers)
 {
 	if (correct)
 	{
@@ -292,7 +275,26 @@ void Questions::PrintResult(bool correct, unsigned int correctIndex)
 		printf("Sorry, incorrect.\n");
 		if (isShowingCorrectAnswer)
 		{
-			printf("Correct answer was: %s", NumberToString(correctIndex).c_str());
+			unsigned int numberOfCorrectAnswers = count(answers.begin(), answers.end(), true);
+			switch (numberOfCorrectAnswers) {
+				case 0:
+					printf("There was no correct answer in those given.\n");
+					break;
+				case 1:
+					printf("Correct answer was: %s.\n", NumberToString(std::find(answers.begin(), answers.end(), true) - answers.begin()).c_str());
+					break;
+				deafult:
+					printf("Correct answers were: ");
+					for (int i = 0; i < answers.size(); i++)
+					{
+						if (answers[i])
+						{
+							printf("%s, ", NumberToString(i).c_str());
+						}
+					}
+					printf("\b\b. \n");
+					break;
+			}
 		}
 	}
 }
@@ -346,4 +348,49 @@ std::string Questions::NumberToString(int n)
 	result += 'A' + n;
 
 	return result;
+}
+
+void Questions::CheckAnswer(std::string answer, Question q)
+{
+	std::vector<std::string> tokens;
+	std::string token;
+	std::istringstream tokenStream(answer);
+	while (std::getline(tokenStream, token, ' '))
+	{
+		tokens.push_back(token);
+	}
+
+	std::vector<bool> answerAssignment(q.qAnswers.size(), false);
+
+
+	unsigned int numberOfCorrectCorrectAnswers		= 0;
+	unsigned int numberOfCorrectIncorrectAnswers	= 0;
+	unsigned int numberOfCorrectAnswers				= count(q.qCorrectAnswerIndexes.begin(), q.qCorrectAnswerIndexes.end(), true);
+	unsigned int numberOfIncorrectAnswers			= q.qAnswers.size() - numberOfCorrectAnswers;
+	
+	for (int i = 0; i < tokens.size(); i++)
+	{
+		answerAssignment[StringToNumber(tokens[i])] = true;
+	}
+
+	for (int i = 0; i < answerAssignment.size(); i++)
+	{
+		if (answerAssignment[i] == q.qCorrectAnswerIndexes[i])
+		{
+			if (answerAssignment[i])
+			{
+				numberOfCorrectCorrectAnswers++;
+			}
+			else
+			{
+				numberOfCorrectIncorrectAnswers++;
+			}
+		}
+	}
+
+	double valueCorrect = std::min((double)numberOfCorrectCorrectAnswers / (double)numberOfCorrectAnswers, (double)numberOfCorrectIncorrectAnswers / (double)numberOfIncorrectAnswers);
+	qCurrentCorrect += valueCorrect;
+	qCurrentTotal++;
+
+	PrintResult(valueCorrect == 1.0, q.qCorrectAnswerIndexes);
 }
