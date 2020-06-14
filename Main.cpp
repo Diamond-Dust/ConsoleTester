@@ -51,6 +51,7 @@ int main()
 		{
 			printf("Please enter the path to the desired file.\n"); 
 			std::string path;
+			std::cin.ignore();
 			std::getline(std::cin, path);
 			q = Questions{ path.c_str() };
 		}

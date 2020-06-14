@@ -11,6 +11,7 @@
 struct Question {
 	std::string					qQuestion;
 	std::vector<std::string>	qAnswers;
+	std::vector<int>			qAnswerIndexes;
 	std::vector<bool>			qCorrectAnswerIndexes;
 };
 
@@ -42,6 +43,8 @@ class Questions {
 
 		void ReadQuestions();
 		void ShuffleQuestions();
+
+		void ShuffleAnswers(Question& q);
 
 		Question NextQuestion();
 		Question RandomQuestion();

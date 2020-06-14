@@ -76,6 +76,7 @@ void Questions::ReadQuestions()
 	{
 		if (line[0] == ' ' || line[0] == '\t')
 		{
+			qList[currentIndex].qAnswerIndexes.push_back(qList[currentIndex].qAnswers.size());
 			if (line[1] == '+')
 			{
 				qList[currentIndex].qAnswers.push_back(line.substr(2, std::string::npos));
@@ -86,6 +87,10 @@ void Questions::ReadQuestions()
 				qList[currentIndex].qAnswers.push_back(line.substr(1, std::string::npos));
 				qList[currentIndex].qCorrectAnswerIndexes.push_back(false);
 			}
+		}
+		else if (line.empty())
+		{
+
 		}
 		else
 		{
@@ -124,6 +129,7 @@ void Questions::RandomQuestioning()
 		{
 			q = RandomQuestion();
 		}
+		ShuffleAnswers(q);
 		PrintQuestion(q);
 		wroteResults = false;
 
@@ -160,6 +166,7 @@ void Questions::FullQuestioning()
 	{
 		input = "";
 		Question q = NextQuestion();
+		ShuffleAnswers(q);
 		PrintQuestion(q);
 
 		while (input.length() == 0) 
@@ -200,6 +207,7 @@ void Questions::EndlessQuestioning()
 			{
 				q = NextQuestion();
 			}
+			ShuffleAnswers(q);
 			PrintQuestion(q);
 			wroteResults = false;
 
@@ -236,6 +244,11 @@ void Questions::ShuffleQuestions()
 	std::shuffle(qListIndexes.begin(), qListIndexes.end(), randomEngine);
 }
 
+void Questions::ShuffleAnswers(Question& q)
+{
+	std::shuffle(q.qAnswerIndexes.begin(), q.qAnswerIndexes.end(), randomEngine);
+}
+
 Question Questions::NextQuestion()
 {
 	return qList[qListIndexes[qCurrentIndex++]];
@@ -253,7 +266,7 @@ void Questions::PrintQuestion(Question q)
 	printf("%s\n", q.qQuestion.c_str());
 	for (unsigned int i = 0; i < q.qAnswers.size(); i++)
 	{
-		printf("%s) %s\n", NumberToString(i).c_str(), q.qAnswers[i].c_str());
+		printf("%s) %s\n", NumberToString(i).c_str(), q.qAnswers[q.qAnswerIndexes[i]].c_str());
 	}
 }
 
@@ -375,7 +388,7 @@ void Questions::CheckAnswer(std::string answer, Question q)
 
 	for (int i = 0; i < answerAssignment.size(); i++)
 	{
-		if (answerAssignment[i] == q.qCorrectAnswerIndexes[i])
+		if (answerAssignment[i] == q.qCorrectAnswerIndexes[q.qAnswerIndexes[i]])
 		{
 			if (answerAssignment[i])
 			{
