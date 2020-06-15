@@ -1,5 +1,5 @@
 How to answer questions?
- +Write correct letter sequence, big or small, without leading or trailing spaces
+ +Write correct letter sequence, big or small
  Input the index of the correct answer
  Slam enter and programme will predict your answer
 Who made this programme?
@@ -8,7 +8,7 @@ Who made this programme?
  +Diamond Dust
  A tall lad from the North
 Diffęręńt ćhąrąćtęrs?
- Yes
- Óf ćóurśę
- +No
- +No, but longer
+ +Yes
+ +Óf ćóurśę
+ No
+ No, but longer

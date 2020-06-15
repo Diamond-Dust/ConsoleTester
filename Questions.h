@@ -51,7 +51,7 @@ class Questions {
 
 		void PrintQuestion(Question q);
 		void PrintResults();
-		void PrintResult(bool correct, std::vector<bool> answers);
+		void PrintResult(double correct, std::vector<bool> answers);
 
 		int StringToNumber(std::string s);
 		std::string NumberToString(int n);

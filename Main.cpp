@@ -6,6 +6,14 @@
 #include<iostream>
 #include "Questions.h"
 
+#ifdef __linux__ 
+
+#elif _WIN32
+	#include<Windows.h>
+#else
+
+#endif
+
 enum class Action {
 	END,
 	FULL,
@@ -24,6 +32,14 @@ void GetAction(Action* qType);
 int main()
 {
 	Questions q{"./questions.txt"};
+
+	#ifdef __linux__ 
+
+	#elif _WIN32
+		SetConsoleOutputCP(65001);
+	#else
+
+	#endif
 
 	Action action;
 	PrintStartingInfo();
@@ -71,18 +87,19 @@ void PrintStartingInfo()
 	printf("Hope you find it useful.\n\n");
 
 	printf("Instructions:\n");
-	printf("Be sure that questions are in the same location as the .exe\n");
-	printf("Question format:\n");
+	printf("Question format (in an UTF-8 text file):\n");
 	printf("QUESTION1\n");
 	printf(" Answer1.1\n");
 	printf(" +Correct Answer1.2\n");
 	printf(" Answer1.3\n");
 	printf("QUESTION2\n");
 	printf(" Answer2.1\n");
-	printf(" Answer2.2\n");
+	printf(" +Correct Answer2.2\n");
 	printf(" +Correct Answer2.3\n");
 	printf(" Answer2.4\n");
 	printf("etc.\n\n");
+	printf("Answer by entering a space-separated list of preceding letter sequences of answers you deem correct.\n");
+	printf("E.g. in QUESTION2, the correct list could be \" B c \"\n\n");
 }
 
 void PrintInfo(Questions q)

@@ -277,15 +277,23 @@ void Questions::PrintResults()
 	printf("|-----------\n");
 }
 
-void Questions::PrintResult(bool correct, std::vector<bool> answers)
+void Questions::PrintResult(double correct, std::vector<bool> answers)
 {
-	if (correct)
+	if (correct == 1.0)
 	{
 		printf("Good! Correct!\n");
 	}
 	else
 	{
-		printf("Sorry, incorrect.\n");
+		if (correct == 0.0) 
+		{
+			printf("Sorry, incorrect.\n");
+		}
+		else
+		{
+			printf("Partially correct.\n");
+		}
+
 		if (isShowingCorrectAnswer)
 		{
 			unsigned int numberOfCorrectAnswers = count(answers.begin(), answers.end(), true);
@@ -367,6 +375,10 @@ void Questions::CheckAnswer(std::string answer, Question q)
 {
 	std::vector<std::string> tokens;
 	std::string token;
+
+	answer.erase(answer.begin(), std::find_if(answer.begin(), answer.end(), [](int ch) { return !std::isspace(ch); }));
+	answer.erase(std::find_if(answer.rbegin(), answer.rend(), [](int ch) { return !std::isspace(ch); }).base(), answer.end());
+
 	std::istringstream tokenStream(answer);
 	while (std::getline(tokenStream, token, ' '))
 	{
@@ -405,5 +417,5 @@ void Questions::CheckAnswer(std::string answer, Question q)
 	qCurrentCorrect += valueCorrect;
 	qCurrentTotal++;
 
-	PrintResult(valueCorrect == 1.0, q.qCorrectAnswerIndexes);
+	PrintResult(valueCorrect, q.qCorrectAnswerIndexes);
 }
