@@ -394,7 +394,6 @@ void Questions::CheckAnswer(std::string answer, Question q)
 	answerReduced.erase(std::find_if(answerReduced.rbegin(), answerReduced.rend(), [](int ch) { return !std::isspace(ch); }).base(), answerReduced.end());
 
 	std::istringstream tokenStream(answerReduced);
-	printf("|%s|\n", answerReduced.c_str());
 	while (std::getline(tokenStream, token, ' '))
 	{
 		if (token.find_first_not_of(' ') != std::string::npos)
