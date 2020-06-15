@@ -376,13 +376,31 @@ void Questions::CheckAnswer(std::string answer, Question q)
 	std::vector<std::string> tokens;
 	std::string token;
 
-	answer.erase(answer.begin(), std::find_if(answer.begin(), answer.end(), [](int ch) { return !std::isspace(ch); }));
-	answer.erase(std::find_if(answer.rbegin(), answer.rend(), [](int ch) { return !std::isspace(ch); }).base(), answer.end());
+	std::vector<char> bytes(answer.begin(), answer.end());
+	bytes.push_back('\0');
+	char* c = &bytes[0];
+	std::vector<char> bytesReduced = std::vector<char>();
+	for (int i = 0; i < bytes.size(); i++)
+	{
+		char byte = bytes[i];
+		if ((byte >= 'a' && byte <= 'z') || (byte >= 'A' && byte <= 'Z') || (byte == ' '))
+		{
+			bytesReduced.push_back(bytes[i]);
+		}
+	}
+	std::string answerReduced(bytesReduced.begin(), bytesReduced.end());
 
-	std::istringstream tokenStream(answer);
+	answerReduced.erase(answerReduced.begin(), std::find_if(answerReduced.begin(), answerReduced.end(), [](int ch) { return !std::isspace(ch); }));
+	answerReduced.erase(std::find_if(answerReduced.rbegin(), answerReduced.rend(), [](int ch) { return !std::isspace(ch); }).base(), answerReduced.end());
+
+	std::istringstream tokenStream(answerReduced);
+	printf("|%s|\n", answerReduced.c_str());
 	while (std::getline(tokenStream, token, ' '))
 	{
-		tokens.push_back(token);
+		if (token.find_first_not_of(' ') != std::string::npos)
+		{
+			tokens.push_back(token);
+		}
 	}
 
 	std::vector<bool> answerAssignment(q.qAnswers.size(), false);
